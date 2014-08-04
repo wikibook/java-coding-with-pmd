@@ -1,0 +1,1944 @@
+Found a 61 line (424 tokens) duplication in the following files: 
+Starting at line 5 of D:\책\workspace\PMD\src\com\software\optimize\solution\mutator\MutatorExample.java
+Starting at line 5 of D:\책\workspace\PMD\src\com\software\optimize\problem\mutator\MutatorExample.java
+
+public class MutatorExample {
+
+    public static void main(String[] args) {
+    
+        MutatorExample example = new MutatorExample();
+        example.testConstructor();
+        example.testAccessor();
+    }
+    
+    public void testConstructor() {
+        System.out.println("생성자 테스트");
+        int[] lotto = new int[]{1,2,3,4,5,6};
+        Date closingDate = new Date();
+        LottoController controller = new LottoController(lotto, closingDate);
+        System.out.println("생성된 로또 정보");
+        System.out.println("마감일: " + controller.getClosingDate());
+        System.out.print("로또 번호: ");
+        for(int value : controller.getLotto()) {
+            System.out.print(value + " ");
+        }
+        
+        //로또 마감 시간과 로또 번호를 공격
+        closingDate.setDate(closingDate.getDate() + 1);
+        lotto[0] = 10;
+        lotto[1] = 11;
+        lotto[2] = 12;
+        
+        System.out.println("\n\n로또 정보를 공격한 이후의 값");
+        System.out.println("마감일: " + controller.getClosingDate());
+        System.out.print("로또 번호: ");
+        for(int value : controller.getLotto()) {
+            System.out.print(value + " ");
+        }
+    }
+    
+    public void testAccessor() {
+        System.out.println("\n\n접근자 테스트");
+        
+        LottoController controller = new LottoController(new int[]{1,2,3,4,5,6}, new Date());
+        System.out.println("생성된 로또 정보");
+        System.out.println("마감일: " + controller.getClosingDate());
+        System.out.print("로또 번호: ");
+        for(int value : controller.getLotto()) {
+            System.out.print(value + " ");
+        }
+        
+        //로또 마감 시간과 로또 번호를 공격
+        controller.getClosingDate().setDate(controller.getClosingDate().getDate() + 1);
+        controller.getLotto()[0] = 10;
+        controller.getLotto()[1] = 11;
+        controller.getLotto()[2] = 12;
+        
+        System.out.println("\n\n로또 정보를 공격한 이후의 값");
+        System.out.println("마감일: " + controller.getClosingDate());
+        System.out.print("로또 번호: ");
+        for(int value : controller.getLotto()) {
+            System.out.print(value + " ");
+        }
+    }
+    
+}
+=====================================================================
+Found a 55 line (237 tokens) duplication in the following files: 
+Starting at line 13 of D:\책\workspace\PMD\src\com\software\debug\solution\CheckedExceptionExample.java
+Starting at line 11 of D:\책\workspace\PMD\src\com\software\debug\problem\CheckedExceptionExample.java
+
+public class CheckedExceptionExample {
+
+    public static void main(String[] args) {
+
+        CheckedExceptionExample example = new CheckedExceptionExample();
+        String result;
+        
+        result = example.loadWebPage("ht://www.google.com", "d:\\web1.txt");
+        System.out.println("저장 상태: " + result);
+        
+        result = example.loadWebPage("http://www.google.com", "d:\\web2.txt");
+        System.out.println("저장 상태: " + result);
+        
+        result = example.loadWebPage("http://www.google.com", "z:\\web2.txt");
+        System.out.println("저장 상태: " + result);
+        
+        //전달인자를 null로 잘못 보냈지만, loadWebPage 메소드가 자신의 문제점으로 인식하고 처리하기 때문에
+        //문제의 정확한 원인을 파악하기 어렵다.
+        result = example.loadWebPage("http://www.google.com", null);
+        System.out.println("저장 상태: " + result);
+ 
+    }
+    
+    /**
+     * 웹 페이지 정보를 파일로 저장
+     * @param url: 웹 페이지 주소
+     * @param fileName: 저장 파일명
+     * @return 저장 결과
+     */
+    public String loadWebPage(String urlStr, String fileName) {
+        String result = "OK";
+        URL url;
+        try {
+            url = new URL(urlStr);
+            URLConnection con = url.openConnection();
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(con.getInputStream() ));
+            String line;
+            File file =new File(fileName);
+            
+            // 파일이 존재하지 않으면 파일을 생성
+            if(!file.exists()) {
+                file.createNewFile();
+            }
+            
+            FileWriter fileWriter = new FileWriter(file); //append file = (file, true)t
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+            while( ( line = bufferedReader.readLine() ) != null ) {
+                bufferedWriter.write(line);
+                bufferedWriter.newLine();
+//                bufferedWriter.write("\n");
+            }
+            bufferedReader.close();
+            bufferedWriter.close();
+        // URL 형식이 올바르지 않아서 문제가 발생했을 때
+        } catch (MalformedURLException e) {
+=====================================================================
+Found a 46 line (171 tokens) duplication in the following files: 
+Starting at line 9 of D:\책\workspace\PMD\src\com\software\basic\solution\PropertiesExample.java
+Starting at line 9 of D:\책\workspace\PMD\src\com\software\basic\problem\PropertiesExample.java
+
+public class PropertiesExample {
+    
+    //프로퍼티 파일의 경로
+    private static final String DEFAULT_PROPERTIES_PATH = "d:\\test.properties";
+    
+    private static String serverIp;
+
+    public static String getServerIp() {
+        return serverIp;
+    }
+    public static void setServerIp(String serverIp) {
+        PropertiesExample.serverIp = serverIp;
+    }
+    
+    /**
+     * 프로퍼티 키로 값을 불러온다.
+     * @param key: 키
+     * @return
+     * @throws Exception
+     */
+    public static String getKey(String key) throws Exception {
+
+        //프로퍼티의 값은 아래와 같이 클래스로더를 이용해서 상대 주소로 불러 올 수 있다.
+        // ClassLoader.getResourceAsStream("com.software.basic.problem.resource.test.properties");
+        String value = null;
+        InputStream is = new FileInputStream(DEFAULT_PROPERTIES_PATH);
+        Properties properties = null;
+        try {
+            properties = new Properties();
+            properties.load(is);
+            value = properties.getProperty(key);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {is.close();} catch (IOException e) {}
+        }
+        return value;
+    }
+    
+    public static void main(String[] args) throws Exception {
+        setServerIp(PropertiesExample.getKey("serverIp"));
+        System.out.println("SERVER IP: " +getServerIp());
+    }
+}
+=====================================================================
+Found a 29 line (144 tokens) duplication in the following files: 
+Starting at line 91 of D:\책\workspace\PMD\src\com\software\design\solution\sde\SwitchDensityExample.java
+Starting at line 78 of D:\책\workspace\PMD\src\com\software\design\problem\sde\SwitchDensityExample.java
+
+        }
+    }
+    
+    public boolean isEnable(String path) {return true;}
+    public String getNews(String path) {return null;}
+    
+    public String getEtNewsTitle(String news) {return null;}
+    
+    public String getEtNewsBody(String news) {return null;}
+    
+    public String getEtAuthor(String path) {return null;}
+    
+    public String getEtDate(String path) {return null;}
+    
+    public String getEtEmail(String path) {return null;}
+    
+    public String getZdNewsTitle(String news) {return null;}
+    
+    public String getZdNewsBody(String news) {return null;}
+    
+    public String getZdAuthor(String path) {return null;}
+    
+    public String getZdDate(String path) {return null;}
+    
+    public String getZdEmail(String path) {return null;}
+    
+    public void storeNews(NewsVO newsVO) {}
+
+}
+=====================================================================
+Found a 56 line (139 tokens) duplication in the following files: 
+Starting at line 3 of D:\책\workspace\PMD\src\com\software\debug\solution\scenario\DocumentController.java
+Starting at line 5 of D:\책\workspace\PMD\src\com\software\debug\problem\scenario\DocumentController.java
+
+public class DocumentController {
+
+    //문서를 생성하는 가상 메소드
+    public boolean create(DocumentVO vo) {
+        //전달된 문서가 null 이라면 문서를 생성할 수 없다
+        boolean isOkay = true;
+        if(vo == null) {
+            isOkay = false;
+        //docId의 접두사가 DOC가 아니면 문서가 아니다. 
+        } else if(!vo.getDocId().startsWith("DOC")) {
+            isOkay = false;
+        //문서의 제목은 null일 수 없다.
+        } else if(vo.getTitle() == null) {
+            isOkay = false;
+        //제목의 길이는 최대 20자다
+        } else if(vo.getTitle().length() > 20) {
+            isOkay = false;
+        }
+        
+        if(isOkay) {
+        /**
+         * 문서 생성 절차
+         */
+        }
+        
+        return isOkay;
+    }
+    
+    //문서를 삭제하는 가상 메소드
+    public boolean delete(DocumentVO vo) {
+        /**
+         * 문서 삭제 절차
+         */
+        return true;
+    }
+    //문서를 수정하는 가장 메소드
+    public boolean update(DocumentVO vo) {
+        /**
+         * 문서 수정 절차
+         */
+        return true;
+    }
+    
+    //문서를 조회하는 가상 메소드
+    public DocumentVO view(String docId) {
+        if(docId == null) {
+            return null;
+        }
+        /**
+         * 문서 조회 절차
+         */
+        
+        return new DocumentVO();
+    }
+    
+}
+=====================================================================
+Found a 38 line (136 tokens) duplication in the following files: 
+Starting at line 3 of D:\책\workspace\PMD\src\com\software\code\solution\many\UserVO.java
+Starting at line 3 of D:\책\workspace\PMD\src\com\software\code\problem\UserVO.java
+
+public class UserVO {
+
+    private String userId;
+    private String userPwd;
+    private String userName;
+    private String address;
+
+    public String getUserId() {
+        return userId;
+    }
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+    public String getUserPwd() {
+        return userPwd;
+    }
+    public void setUserPwd(String userPwd) {
+        this.userPwd = userPwd;
+    }
+    public String getUserName() {
+        return userName;
+    }
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+    public String getAddress() {
+        return address;
+    }
+    public void setAddress(String address) {
+        this.address = address;
+    }
+    @Override
+    public String toString() {
+        return "UserVO [userId=" + userId + ", userPwd=" + userPwd
+                + ", userName=" + userName + ", address=" + address + "]";
+    }
+    
+}
+=====================================================================
+Found a 26 line (123 tokens) duplication in the following files: 
+Starting at line 6 of D:\책\workspace\PMD\src\com\software\basic\solution\equals\TestKlass.java
+Starting at line 6 of D:\책\workspace\PMD\src\com\software\basic\problem\equals\TestKlass.java
+
+public class TestKlass {
+
+    public static void main(String[] args) {
+        SampleKlass sampleKlass = new SampleKlass(1, "test");
+        
+        SampleKlass sampleKlass2 = new SampleKlass(1, "test2");
+        
+        SampleKlass sampleKlass3 = new SampleKlass(1, "test");
+        
+        /**
+         * SampleKlass의 equals 메소드를 이용해서 비교한다.
+         */
+        System.out.println(sampleKlass.equals(sampleKlass2));
+        
+        System.out.println(sampleKlass.equals(sampleKlass3));
+        
+        
+        Map<SampleKlass, String> map = new HashMap<SampleKlass, String>();
+        
+        map.put(new SampleKlass(1, "test"), "value1");
+        
+        //값은 우리가 원하는 value1이 아니라 null이 나온다.
+        System.out.println(map.get(new SampleKlass(1, "test")));
+        
+    }
+}
+=====================================================================
+Found a 21 line (122 tokens) duplication in the following files: 
+Starting at line 3 of D:\책\workspace\PMD\src\com\software\design\solution\sde\SwitchDensityExample.java
+Starting at line 3 of D:\책\workspace\PMD\src\com\software\design\problem\sde\SwitchDensityExample.java
+
+public class SwitchDensityExample {
+
+    public static final  int NONE			= -1;
+    public static final  int ETNEWS		= 0;
+    public static final int ZDNET			= 1;
+    public static final int NEWS_COM1	= 2;
+    public static final int NEWS_COM2	= 3;
+    public static final int NEWS_COM3	= 4;
+    
+    public static void main(String[] args) {
+        int type = args != null ? Integer.parseInt(args[0]) : NONE;
+        
+        String path = args != null && args.length == 2 ? args[1] : null;
+        
+        SwitchDensityExample example = new SwitchDensityExample();
+        example.getNewsData(type, path);
+        
+    }
+    
+    
+    public void getNewsData(int type, String path) {
+=====================================================================
+Found a 31 line (113 tokens) duplication in the following files: 
+Starting at line 3 of D:\책\workspace\PMD\src\com\software\design\problem\dcl\DclSample.java
+Starting at line 3 of D:\책\workspace\PMD\src\com\software\basic\problem\dcl\DclSample.java
+
+public class DclSample {
+    
+    private static DclSample instance;
+    
+    private String msg = "초기화 이전";
+    
+    private DclSample() {}
+    
+    public void setMsg(String msg) {
+        this.msg = msg;
+    }
+    
+    public static DclSample getInstance() {
+        System.out.println("인스턴스 생성 시작");
+        if(instance == null) {                            //2,    6
+            synchronized (DclSample.class) {
+                if(instance == null) {                    //3,
+                    instance = new DclSample();      //4
+                    System.out.println("다음 아이디로 인스턴스가 생성됨:" + instance);    //9
+                    instance.setMsg( "초기화 완료" );    //10
+                }
+            }
+        }
+        
+        return instance;    //7,    11
+    }
+        
+    public void printStatus() {
+        System.out.println(msg);    //8,    12
+    }
+}
+=====================================================================
+Found a 42 line (109 tokens) duplication in the following files: 
+Starting at line 3 of D:\책\workspace\PMD\src\com\software\debug\solution\scenario\DocumentVO.java
+Starting at line 3 of D:\책\workspace\PMD\src\com\software\debug\problem\scenario\DocumentVO.java
+
+public class DocumentVO {
+
+    private String docId;        //문서 아이디
+    
+    private String title;            //문서 제목
+    
+    private String body;            //문서 내용
+    
+    private String author;        //작성자
+
+    public String getDocId() {
+        return docId;
+    }
+
+    public void setDocId(String docId) {
+        this.docId = docId;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+}
+=====================================================================
+Found a 22 line (83 tokens) duplication in the following files: 
+Starting at line 3 of D:\책\workspace\PMD\src\com\software\debug\solution\equals\CodeGenerator.java
+Starting at line 3 of D:\책\workspace\PMD\src\com\software\debug\problem\equals\CodeGenerator.java
+
+public class CodeGenerator {
+
+    /**
+     * 입력된 메시지를 해당 코드로 변환하여 반환한다.
+     * @param value 메시지
+     * @return 코드
+     */
+    public String toCode(String value) {
+        
+        String[][] codeMap = new String[][]{{"CODE001","입금"},{"CODE002","출금"},{"CODE003","조회"}};
+        
+        String code = "ERROR";
+        
+        for(String[] map : codeMap) {
+            if(map[1].equals(value)) {
+                code = map[0];
+            }
+        }
+        
+        return code;
+    }
+}
+=====================================================================
+Found a 24 line (82 tokens) duplication in the following files: 
+Starting at line 7 of D:\책\workspace\PMD\src\com\software\empty\problem\EmptyFinallyBlockExample.java
+Starting at line 7 of D:\책\workspace\PMD\src\com\software\design\problem\EmptyFinallyBlockExample.java
+
+    public static void main(String args[]){
+
+        // 접속 정보
+        String connectionURL = "jdbc:postgresql://localhost:5432/movies;user=java;password=samples";
+        Connection con = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+        try {
+            // 드라이버 로드
+            Class.forName("org.postgresql.Driver");
+
+            // 연결 생성
+            con = DriverManager.getConnection(connectionURL);
+
+            // 쿼리 실행 클래스 생성
+            stmt = con.createStatement();
+
+            // 쿼리 실행 후 결과 반환 
+            rs = stmt.executeQuery("select moviename, releasedate form movies");
+
+            // 쿼리 결과 처리
+            while (rs.next()) {
+                System.out.println("Name= " + rs.getString("moviename")+ " Date= " + rs.getString("releasedate"));
+            }
+=====================================================================
+Found a 23 line (81 tokens) duplication in the following files: 
+Starting at line 3 of D:\책\workspace\PMD\src\com\software\design\problem\dcl\DclTest.java
+Starting at line 3 of D:\책\workspace\PMD\src\com\software\basic\problem\dcl\DclTest.java
+
+public class DclTest {
+    
+    public static void main(String[] args) {
+        Thread thread1 = new Thread() {
+            @Override
+            public void run() {
+                // 첫 번째 인스턴스 호출
+                DclSample.getInstance().printStatus();    //1
+            }
+        };
+        
+        Thread thread2 = new Thread() {
+            @Override
+            public void run() {
+            	// 두 번째 인스턴스 호출
+                DclSample.getInstance().printStatus();    //5
+            }
+        };
+        //스레드 시작
+        thread1.start();
+        thread2.start();
+    }
+}
+=====================================================================
+Found a 12 line (77 tokens) duplication in the following files: 
+Starting at line 3 of D:\책\workspace\PMD\src\com\software\design\solution\MissingBreakInSwitchExample1.java
+Starting at line 3 of D:\책\workspace\PMD\src\com\software\design\problem\MissingBreakInSwitchExample1.java
+
+public class MissingBreakInSwitchExample1 {
+
+    private static final int LOGIN = 0;
+    private static final int LOGOUT = 1;
+    private static final int SIGN_IN = 2;
+    private static final int SIGN_OUT = 3;
+    
+    public static void main(String[] args) {
+        int key = args != null ? Integer.parseInt( args[0] ) : 0;
+        switch (key) {
+        case LOGIN:
+            System.out.println("로그인 하셨습니다.");
+=====================================================================
+Found a 21 line (75 tokens) duplication in the following files: 
+Starting at line 3 of D:\책\workspace\PMD\src\com\software\basic\solution\equals\SampleKlass.java
+Starting at line 3 of D:\책\workspace\PMD\src\com\software\basic\problem\equals\SampleKlass.java
+
+public class SampleKlass {
+    int id;
+    String name;
+    
+    public SampleKlass(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+    
+    public int getId() {
+        return id;
+    }
+    public void setId(int id) {
+        this.id = id;
+    }
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+=====================================================================
+Found a 22 line (70 tokens) duplication in the following files: 
+Starting at line 9 of D:\책\workspace\PMD\src\com\software\debug\solution\scenario\ScenarioExample.java
+Starting at line 9 of D:\책\workspace\PMD\src\com\software\debug\problem\scenario\ScenarioExample.java
+
+public class ScenarioExample {
+
+    private DocumentVO documentVO;
+    private static DocumentController controller; 
+    
+    @BeforeClass
+    public static void beforeClass() {
+        controller = new DocumentController();
+    }
+    
+    @Before
+    public void before() {
+        documentVO = new DocumentVO();
+        documentVO.setDocId("DOC001");
+        documentVO.setTitle("제목");
+        documentVO.setBody("내용");
+        documentVO.setAuthor("김이박");
+    }
+    
+    //빈 문서 생성 테스트
+    @Test
+    public void testEmptyDoc() {
+=====================================================================
+Found a 25 line (70 tokens) duplication in the following files: 
+Starting at line 19 of D:\책\workspace\PMD\src\com\software\debug\solution\scenario\DocumentVO.java
+Starting at line 19 of D:\책\workspace\PMD\src\com\software\debug\problem\scenario\DocumentVO.java
+Starting at line 14 of D:\책\workspace\PMD\src\com\software\code\solution\many\DocumentVO.java
+
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+=====================================================================
+Found a 20 line (66 tokens) duplication in the following files: 
+Starting at line 3 of D:\책\workspace\PMD\src\com\software\design\solution\inner\MonsterFactory.java
+Starting at line 3 of D:\책\workspace\PMD\src\com\software\design\problem\inner\MonsterFactory.java
+
+public class MonsterFactory {
+    public IMonster makeMonster(int monsterType) throws NoClassDefFoundError {
+        IMonster monster;
+        switch (monsterType) {
+        case 0:
+            monster = new MonsterA();
+            break;
+        case 1:
+            monster = new MonsterB();
+            break;
+        case 2:
+            monster = new MonsterC();
+            break;
+        default:
+            monster = null;
+            throw new NoClassDefFoundError("해당 몬스터는 존재하지 않습니다.");
+        }
+        
+        return  monster;
+    }
+=====================================================================
+Found a 14 line (65 tokens) duplication in the following files: 
+Starting at line 11 of D:\책\workspace\PMD\src\com\software\naming\solution\GenericsExample.java
+Starting at line 11 of D:\책\workspace\PMD\src\com\software\naming\problem\GenericsExample.java
+
+        this.t = value;
+    }
+
+    public static void main(String args[]){
+        GenericsExample<String> type = new GenericsExample<>();
+        type.set("test"); //허용
+
+        GenericsExample type1 = new GenericsExample(); //raw type
+        type1.set("Pankaj"); //허용
+        type1.set(10); //오토박싱 지원
+        
+        System.out.println(type1.get());
+    }
+}
+=====================================================================
+Found a 16 line (62 tokens) duplication in the following files: 
+Starting at line 14 of D:\책\workspace\PMD\src\com\software\basic\solution\ForNWhileExample2.java
+Starting at line 25 of D:\책\workspace\PMD\src\com\software\basic\problem\ForNWhileExample.java
+
+    public static void unreadableForExample() {
+        String pwd = "password";
+        Scanner scanner = new Scanner(System.in);
+
+        //특정 조건에 따라 제어되어야 하는 반복문은 while을 사용하자
+        while(true) {
+            System.out.print("암호를 입력하세요: ");
+            if(pwd.equals(scanner.next())) {
+                System.out.println("암호 확인 ");
+                break;
+            }
+        }
+        scanner.close();
+    }
+    
+}
+=====================================================================
+Found a 22 line (61 tokens) duplication in the following files: 
+Starting at line 40 of D:\책\workspace\PMD\src\com\software\design\problem\inner\MonsterFactory.java
+Starting at line 66 of D:\책\workspace\PMD\src\com\software\design\problem\inner\MonsterFactory.java
+
+        private MonsterA(){};
+        
+        @Override
+        public void forward() {    }
+
+        @Override
+        public void backward() {}
+
+        @Override
+        public void turnLeft() {}
+
+        @Override
+        public void turnRight() {}
+
+        @Override
+        public void attact() {}
+
+        @Override
+        public void defence() {}
+    }
+    
+    public class MonsterB implements IMonster {
+=====================================================================
+Found a 11 line (60 tokens) duplication in the following files: 
+Starting at line 3 of D:\책\workspace\PMD\src\com\software\design\solution\inner\MonsterController.java
+Starting at line 5 of D:\책\workspace\PMD\src\com\software\design\problem\inner\MonsterController.java
+
+public class MonsterController {
+
+    public static void main(String[] args) {
+        MonsterFactory factory = new MonsterFactory();
+        IMonster monsterA = factory.makeMonster(0);
+        IMonster monsterB = factory.makeMonster(1);
+        IMonster monsterC = factory.makeMonster(2);
+        //졍해지지 않은 유형으로 오류가 발생한다.
+        IMonster monsterD = factory.makeMonster(3);
+    }
+}
+=====================================================================
+Found a 21 line (60 tokens) duplication in the following files: 
+Starting at line 6 of D:\책\workspace\PMD\src\com\software\design\solution\inner\MonsterC.java
+Starting at line 92 of D:\책\workspace\PMD\src\com\software\design\problem\inner\MonsterFactory.java
+
+    public MonsterC() {    }
+    
+    @Override
+    public void forward() {}
+
+    @Override
+    public void backward() {}
+
+    @Override
+    public void turnLeft() {}
+
+    @Override
+    public void turnRight() {}
+
+    @Override
+    public void attact() {}
+
+    @Override
+    public void defence() {}
+
+}
+=====================================================================
+Found a 21 line (60 tokens) duplication in the following files: 
+Starting at line 6 of D:\책\workspace\PMD\src\com\software\design\solution\inner\MonsterB.java
+Starting at line 66 of D:\책\workspace\PMD\src\com\software\design\problem\inner\MonsterFactory.java
+
+    public MonsterB() {    }
+    
+    @Override
+    public void forward() {}
+
+    @Override
+    public void backward() {}
+
+    @Override
+    public void turnLeft() {}
+
+    @Override
+    public void turnRight() {}
+
+    @Override
+    public void attact() {}
+
+    @Override
+    public void defence() {}
+
+}
+=====================================================================
+Found a 21 line (60 tokens) duplication in the following files: 
+Starting at line 6 of D:\책\workspace\PMD\src\com\software\design\solution\inner\MonsterA.java
+Starting at line 40 of D:\책\workspace\PMD\src\com\software\design\problem\inner\MonsterFactory.java
+
+    public MonsterA() {    }
+    
+    @Override
+    public void forward() {}
+
+    @Override
+    public void backward() {}
+
+    @Override
+    public void turnLeft() {}
+
+    @Override
+    public void turnRight() {}
+
+    @Override
+    public void attact() {}
+
+    @Override
+    public void defence() {}
+
+}
+=====================================================================
+Found a 9 line (59 tokens) duplication in the following files: 
+Starting at line 30 of D:\책\workspace\PMD\src\com\software\optimize\solution\mutator\MutatorExample.java
+Starting at line 55 of D:\책\workspace\PMD\src\com\software\optimize\solution\mutator\MutatorExample.java
+Starting at line 30 of D:\책\workspace\PMD\src\com\software\optimize\problem\mutator\MutatorExample.java
+Starting at line 55 of D:\책\workspace\PMD\src\com\software\optimize\problem\mutator\MutatorExample.java
+
+        lotto[2] = 12;
+        
+        System.out.println("\n\n로또 정보를 공격한 이후의 값");
+        System.out.println("마감일: " + controller.getClosingDate());
+        System.out.print("로또 번호: ");
+        for(int value : controller.getLotto()) {
+            System.out.print(value + " ");
+        }
+    }
+=====================================================================
+Found a 21 line (59 tokens) duplication in the following files: 
+Starting at line 6 of D:\책\workspace\PMD\src\com\software\design\solution\inner\MonsterC.java
+Starting at line 6 of D:\책\workspace\PMD\src\com\software\design\solution\inner\MonsterB.java
+Starting at line 6 of D:\책\workspace\PMD\src\com\software\design\solution\inner\MonsterA.java
+Starting at line 40 of D:\책\workspace\PMD\src\com\software\design\problem\inner\MonsterFactory.java
+Starting at line 66 of D:\책\workspace\PMD\src\com\software\design\problem\inner\MonsterFactory.java
+Starting at line 92 of D:\책\workspace\PMD\src\com\software\design\problem\inner\MonsterFactory.java
+
+    public MonsterC() {    }
+    
+    @Override
+    public void forward() {}
+
+    @Override
+    public void backward() {}
+
+    @Override
+    public void turnLeft() {}
+
+    @Override
+    public void turnRight() {}
+
+    @Override
+    public void attact() {}
+
+    @Override
+    public void defence() {}
+
+}
+=====================================================================
+Found a 14 line (59 tokens) duplication in the following files: 
+Starting at line 6 of D:\책\workspace\PMD\src\com\software\braces\problem\StringBuilderExample.java
+Starting at line 6 of D:\책\workspace\PMD\src\com\software\braces\problem\StringBufferExample.java
+
+        StringBuilder result = new StringBuilder(10000000);
+        // 시작 시간
+        long startTime = System.currentTimeMillis();
+        // + 연산자보다 10배 많은 연산
+        for(int i=0; i < 1000000; i++) {
+            result.append(text);
+        }
+        // 종료 시간
+        long endTime = System.currentTimeMillis();
+        
+        // 시간 출력
+        System.out.println("##  실행시간(초.0f) : " + ( endTime - startTime )/1000.0f +"초"); 
+    }
+}
+=====================================================================
+Found a 13 line (56 tokens) duplication in the following files: 
+Starting at line 3 of D:\책\workspace\PMD\src\com\software\optimize\solution\AvoidArrayLoopsExample.java
+Starting at line 3 of D:\책\workspace\PMD\src\com\software\optimize\problem\AvoidArrayLoopsExample.java
+
+public class AvoidArrayLoopsExample {
+
+    public static void main(String[] args) {
+        int[] source = new int[10000000];
+        
+        //원본 배열에 값 입력
+        for(int i=0; i < source.length; i++) {
+            source[i] = i;
+        }
+        
+        AvoidArrayLoopsExample example = new AvoidArrayLoopsExample();
+        
+        example.copyByArrayCopy(source);
+=====================================================================
+Found a 8 line (55 tokens) duplication in the following files: 
+Starting at line 63 of D:\책\workspace\PMD\src\com\software\design\solution\sde\SwitchDensityExample.java
+Starting at line 36 of D:\책\workspace\PMD\src\com\software\design\problem\sde\SwitchDensityExample.java
+
+            news = getNews(path);
+            title = getEtNewsTitle(news);
+            body = getEtNewsBody(news);
+            author = getEtAuthor(news);
+            date = getEtDate(news);
+            email = getEtEmail(news);
+            newsVO =  new NewsVO(title,body,author,date,email);
+            storeNews(newsVO);
+=====================================================================
+Found a 12 line (55 tokens) duplication in the following files: 
+Starting at line 22 of D:\책\workspace\PMD\src\com\software\design\problem\SingletonClassExample2.java
+Starting at line 33 of D:\책\workspace\PMD\src\com\software\design\problem\SingletonClassExample1.java
+
+        return instance;
+    }
+    
+    public boolean isEmpty(String value) {
+        return value == null || value.isEmpty() ? true : false;
+    }
+    
+    public String changeMoney(String str) {
+        DecimalFormat df = new DecimalFormat("###,###");
+        return df.format(Integer.valueOf(str));
+    }
+}
+=====================================================================
+Found a 7 line (54 tokens) duplication in the following files: 
+Starting at line 18 of D:\책\workspace\PMD\src\com\software\optimize\solution\mutator\MutatorExample.java
+Starting at line 43 of D:\책\workspace\PMD\src\com\software\optimize\solution\mutator\MutatorExample.java
+Starting at line 18 of D:\책\workspace\PMD\src\com\software\optimize\problem\mutator\MutatorExample.java
+Starting at line 43 of D:\책\workspace\PMD\src\com\software\optimize\problem\mutator\MutatorExample.java
+
+        LottoController controller = new LottoController(lotto, closingDate);
+        System.out.println("생성된 로또 정보");
+        System.out.println("마감일: " + controller.getClosingDate());
+        System.out.print("로또 번호: ");
+        for(int value : controller.getLotto()) {
+            System.out.print(value + " ");
+        }
+=====================================================================
+Found a 12 line (54 tokens) duplication in the following files: 
+Starting at line 26 of D:\책\workspace\PMD\src\com\software\basic\solution\SkipExample.java
+Starting at line 16 of D:\책\workspace\PMD\src\com\software\basic\problem\SkipExample.java
+
+        int i;
+        StringBuilder sb = new StringBuilder();
+        while((i = is.read()) != -1 ) {
+            sb.append((char)i);
+            
+        }
+        is.close();
+        
+        System.out.println(sb.length());
+    }
+    
+}
+=====================================================================
+Found a 9 line (53 tokens) duplication in the following files: 
+Starting at line 25 of D:\책\workspace\PMD\src\com\software\design\problem\SingletonClassExample2.java
+Starting at line 37 of D:\책\workspace\PMD\src\com\software\design\problem\SingletonClassExample1.java
+Starting at line 14 of D:\책\workspace\PMD\src\com\software\design\problem\PojoClassExample.java
+
+    public boolean isEmpty(String value) {
+        return value == null || value.isEmpty() ? true : false;
+    }
+    
+    public String changeMoney(String str) {
+        DecimalFormat df = new DecimalFormat("###,###");
+        return df.format(Integer.valueOf(str));
+    }
+}
+=====================================================================
+Found a 5 line (53 tokens) duplication in the following files: 
+Starting at line 5 of D:\책\workspace\PMD\src\com\software\code\solution\CyclomaticComplexityExample.java
+Starting at line 3 of D:\책\workspace\PMD\src\com\software\code\problem\CyclomaticComplexityExample.java
+
+public class CyclomaticComplexityExample {
+
+    public static void main(String[] args) {
+        int[] array = {0,3,5,2,6,7,8,9,1,4};
+        int[] sortedArray = new int[array.length];
+=====================================================================
+Found a 12 line (50 tokens) duplication in the following files: 
+Starting at line 24 of D:\책\workspace\PMD\src\com\software\string\solution\DuplicatedLiteralsExample.java
+Starting at line 21 of D:\책\workspace\PMD\src\com\software\string\problem\DuplicatedLiteralsExample.java
+
+        if(ROLE_ADMIN.equals(role) && ROLE_USER.equals(role)) {
+            result = false;
+        } else {
+            this.role = role;
+            result = true;
+        }
+        return result;
+    }
+    
+    public void createUser(String userId, String password) {
+        if("admin".equals(userId)) {
+            this.role = ROLE_ADMIN;
+=====================================================================
+Found a 9 line (49 tokens) duplication in the following files: 
+Starting at line 6 of D:\책\workspace\PMD\src\com\software\basic\solution\ToArrayExample.java
+Starting at line 6 of D:\책\workspace\PMD\src\com\software\basic\problem\ToArrayExample.java
+
+public class ToArrayExample {
+    public static void main(String[] args) {
+        List<String> list = new ArrayList<String>();
+        list.add("aaa");
+        list.add("bbb");
+        list.add("ccc");
+        
+        //아래와 같이 목표가 되는 배열의 자료형과 배열의 정확한 길이를 전달한다.
+        String[] array3 = (String[])list.toArray(new String[list.size()]);
+=====================================================================
+Found a 14 line (48 tokens) duplication in the following files: 
+Starting at line 3 of D:\책\workspace\PMD\src\com\software\design\solution\dcl\DclSample.java
+Starting at line 3 of D:\책\workspace\PMD\src\com\software\design\problem\dcl\DclSample.java
+Starting at line 3 of D:\책\workspace\PMD\src\com\software\basic\problem\dcl\DclSample.java
+
+public class DclSample {
+    
+    private static DclSample instance;
+    
+    private String msg = "초기화 이전";
+    
+    private DclSample() {}
+    
+    public void setMsg(String msg) {
+        this.msg = msg;
+    }
+    
+    public static DclSample getInstance() {
+        System.out.println("인스턴스 생성 시작");
+=====================================================================
+Found a 9 line (47 tokens) duplication in the following files: 
+Starting at line 3 of D:\책\workspace\PMD\src\com\software\coupling\solution\demeter\LoosingCouplingExample.java
+Starting at line 3 of D:\책\workspace\PMD\src\com\software\coupling\problem\demeter\LoosingCouplingExample.java
+
+public class LoosingCouplingExample {
+
+    public static void main(String[] args) {
+        
+        Customer ted = new Customer("C01", 1000);
+        Customer yuto = new Customer("C01", 1000);
+        
+        ted.deposit(100);
+        ted.withdrawal(90);
+=====================================================================
+Found a 6 line (46 tokens) duplication in the following files: 
+Starting at line 19 of D:\책\workspace\PMD\src\com\software\optimize\solution\mutator\MutatorExample.java
+Starting at line 32 of D:\책\workspace\PMD\src\com\software\optimize\solution\mutator\MutatorExample.java
+Starting at line 44 of D:\책\workspace\PMD\src\com\software\optimize\solution\mutator\MutatorExample.java
+Starting at line 57 of D:\책\workspace\PMD\src\com\software\optimize\solution\mutator\MutatorExample.java
+Starting at line 19 of D:\책\workspace\PMD\src\com\software\optimize\problem\mutator\MutatorExample.java
+Starting at line 32 of D:\책\workspace\PMD\src\com\software\optimize\problem\mutator\MutatorExample.java
+Starting at line 44 of D:\책\workspace\PMD\src\com\software\optimize\problem\mutator\MutatorExample.java
+Starting at line 57 of D:\책\workspace\PMD\src\com\software\optimize\problem\mutator\MutatorExample.java
+
+        System.out.println("생성된 로또 정보");
+        System.out.println("마감일: " + controller.getClosingDate());
+        System.out.print("로또 번호: ");
+        for(int value : controller.getLotto()) {
+            System.out.print(value + " ");
+        }
+=====================================================================
+Found a 7 line (46 tokens) duplication in the following files: 
+Starting at line 84 of D:\책\workspace\PMD\src\com\software\design\solution\sde\SwitchDensityExample.java
+Starting at line 51 of D:\책\workspace\PMD\src\com\software\design\problem\sde\SwitchDensityExample.java
+
+            title = getZdNewsTitle(news);
+            body = getZdNewsBody(news);
+            author = getZdAuthor(news);
+            date = getZdDate(news);
+            email = getZdEmail(news);
+            newsVO =  new NewsVO(title,body,author,date,email);
+            storeNews(newsVO);
+=====================================================================
+Found a 4 line (45 tokens) duplication in the following files: 
+Starting at line 16 of D:\책\workspace\PMD\src\com\software\optimize\solution\mutator\MutatorExample.java
+Starting at line 9 of D:\책\workspace\PMD\src\com\software\optimize\problem\mutator\RefereenceExample.java
+Starting at line 16 of D:\책\workspace\PMD\src\com\software\optimize\problem\mutator\MutatorExample.java
+
+        int[] lotto = new int[]{1,2,3,4,5,6};
+        Date closingDate = new Date();
+        LottoController controller = new LottoController(lotto, closingDate);
+        System.out.println("생성된 로또 정보");
+=====================================================================
+Found a 9 line (44 tokens) duplication in the following files: 
+Starting at line 12 of D:\책\workspace\PMD\src\com\software\design\solution\NestedIfExample.java
+Starting at line 12 of D:\책\workspace\PMD\src\com\software\design\problem\NestedIfExample.java
+
+        for(int i=1900; i <=calendar.get(Calendar.YEAR); i++) {
+            if(isLeapYear(i)) {
+                System.out.println(i + "년은 윤년입니다.");
+            }
+        }
+    }
+    
+    public static boolean isLeapYear(int year) {
+        boolean result;
+=====================================================================
+Found a 11 line (44 tokens) duplication in the following files: 
+Starting at line 19 of D:\책\workspace\PMD\src\com\software\basic\solution\ForNWhileExample2.java
+Starting at line 19 of D:\책\workspace\PMD\src\com\software\basic\problem\ForNWhileExample2.java
+Starting at line 30 of D:\책\workspace\PMD\src\com\software\basic\problem\ForNWhileExample.java
+
+        while(true) {
+            System.out.print("암호를 입력하세요: ");
+            if(pwd.equals(scanner.next())) {
+                System.out.println("암호 확인 ");
+                break;
+            }
+        }
+        scanner.close();
+    }
+    
+}
+=====================================================================
+Found a 6 line (43 tokens) duplication in the following files: 
+Starting at line 23 of D:\책\workspace\PMD\src\com\software\optimize\solution\AvoidArrayLoopsExample.java
+Starting at line 30 of D:\책\workspace\PMD\src\com\software\optimize\solution\ArrayCopyExample.java
+
+        System.arraycopy(source, 0, target, 0, source.length); 
+        // 종료 시간
+        long endTime = System.currentTimeMillis();
+        // 시간 출력
+        System.out.println("##arraycopy 실행시간(초.0f) : " + ( endTime - startTime )/1000.0f +"초");
+    }
+=====================================================================
+Found a 13 line (43 tokens) duplication in the following files: 
+Starting at line 2 of D:\책\workspace\PMD\src\com\software\design\problem\dcl\Foo.java
+Starting at line 2 of D:\책\workspace\PMD\src\com\software\basic\problem\dcl\Foo.java
+
+public class Foo {
+    Object baz;
+    Object bar() {
+        if (baz == null) { // baz 는 아직 완전하게 생성된 것이 아니다.
+            synchronized(this) {
+                if (baz == null) {
+                    baz = new Object();
+                }
+              }
+        }
+        return baz;
+    }
+}
+=====================================================================
+Found a 12 line (43 tokens) duplication in the following files: 
+Starting at line 3 of D:\책\workspace\PMD\src\com\software\basic\solution\thread\ThreadRunSample.java
+Starting at line 3 of D:\책\workspace\PMD\src\com\software\basic\problem\thread\ThreadRunSample.java
+
+public class ThreadRunSample implements Runnable{
+    
+    public void run() {
+        try {
+            Thread.sleep(1000);
+            System.out.println("작업이 실행됨");
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        
+    }
+}
+=====================================================================
+Found a 6 line (40 tokens) duplication in the following files: 
+Starting at line 3 of D:\책\workspace\PMD\src\com\software\basic\solution\thread\ThreadExample.java
+Starting at line 3 of D:\책\workspace\PMD\src\com\software\basic\problem\thread\ThreadExample.java
+
+public class ThreadExample {
+    public static void main(String[] args) {
+        Runnable runnable = new ThreadRunSample();
+        Thread thread = new Thread(runnable);
+        System.out.println("스레드 호출 시작");
+        thread.start();
+=====================================================================
+Found a 12 line (40 tokens) duplication in the following files: 
+Starting at line 5 of D:\책\workspace\PMD\src\com\software\basic\solution\ForNWhileExample2.java
+Starting at line 5 of D:\책\workspace\PMD\src\com\software\basic\problem\ForNWhileExample2.java
+
+public class ForNWhileExample2 {
+
+    public static void main(String[] args) {
+        unreadableForExample();
+    }
+    
+    /**
+     * 잘못된 for문의 예
+     */
+    public static void unreadableForExample() {
+        String pwd = "password";
+        Scanner scanner = new Scanner(System.in);
+=====================================================================
+Found a 8 line (38 tokens) duplication in the following files: 
+Starting at line 8 of D:\책\workspace\PMD\src\com\software\optimize\solution\UseArraysAsListExample.java
+Starting at line 11 of D:\책\workspace\PMD\src\com\software\optimize\problem\UseArraysAsListExample.java
+
+        Integer[] array = new Integer[1000000];
+        
+        //반복문을 이용한 데이터 입력  
+        for(int i=0; i < 1000000; i++) {
+            array[i] = i;
+        }
+        // 시작 시간
+        long startTime = System.currentTimeMillis();
+=====================================================================
+Found a 7 line (38 tokens) duplication in the following files: 
+Starting at line 17 of D:\책\workspace\PMD\src\com\software\design\solution\dcl\DclSample.java
+Starting at line 18 of D:\책\workspace\PMD\src\com\software\design\problem\dcl\DclSample.java
+Starting at line 18 of D:\책\workspace\PMD\src\com\software\basic\problem\dcl\DclSample.java
+
+        synchronized (DclSample.class) {
+            if(instance == null) {                    //3,
+                instance = new DclSample();      //4
+                System.out.println("다음 아이디로 인스턴스가 생성됨:" + instance);    //9
+                instance.setMsg( "초기화 완료" );    //10
+            }
+        }
+=====================================================================
+Found a 11 line (37 tokens) duplication in the following files: 
+Starting at line 54 of D:\책\workspace\PMD\src\com\software\design\solution\sde\SwitchDensityExample.java
+Starting at line 74 of D:\책\workspace\PMD\src\com\software\design\solution\sde\SwitchDensityExample.java
+
+    public void saveEtNews(String path) {
+        NewsVO newsVO = null;
+        String title;
+        String body;
+        String author;
+        String date;
+        String email;
+        String news;
+        if(isEnable(path)) {
+            news = getNews(path);
+            title = getEtNewsTitle(news);
+=====================================================================
+Found a 22 line (37 tokens) duplication in the following files: 
+Starting at line 3 of D:\책\workspace\PMD\src\com\software\braces\problem\OTBSExample.java
+Starting at line 4 of D:\책\workspace\PMD\src\com\software\braces\problem\KnRStyleExample.java
+
+public class OTBSExample {
+    private void something() {
+
+    }
+
+    private void somethingelse() {
+
+    }
+
+    private void finalthing() {
+
+    }
+
+    private void do_correct() {
+
+    }
+
+    private void continue_as_usual() {
+
+    }
+
+    public OTBSExample(boolean status, int x, int y) {
+=====================================================================
+Found a 15 line (37 tokens) duplication in the following files: 
+Starting at line 21 of D:\책\workspace\PMD\src\com\software\basic\solution\NullCheckExample.java
+Starting at line 29 of D:\책\workspace\PMD\src\com\software\basic\problem\NullCheckExample.java
+
+        if (value == null || value.equals("")) {
+            result = true;
+        } else {
+            result = false;
+        }
+        
+        return result;
+    }
+    
+    //잘못된 널 비교 메소드 1
+    public static boolean isNull2(String value) {
+        boolean result;
+        
+        //정상적인 null 비교 조건
+        if (value != null && !value.equals("")) {
+=====================================================================
+Found a 7 line (37 tokens) duplication in the following files: 
+Starting at line 3 of D:\책\workspace\PMD\src\com\software\basic\solution\BranchingExample2.java
+Starting at line 3 of D:\책\workspace\PMD\src\com\software\basic\problem\BranchingExample2.java
+
+public class BranchingExample2 {
+    public static void main(String[] args) {
+        
+        int result = 0;
+        //잘못된 제어문과 예약어의 조합
+        for(int i=0; i < 10; i++) {
+            if (i*i > 25) {
+=====================================================================
+Found a 6 line (37 tokens) duplication in the following files: 
+Starting at line 3 of D:\책\workspace\PMD\src\com\software\basic\solution\BranchingExample.java
+Starting at line 3 of D:\책\workspace\PMD\src\com\software\basic\problem\BranchingExample.java
+
+public class BranchingExample {
+    public static void main(String[] args) {
+        
+        //제어문과 continue를 이용하여 0~10사이의 홀수를 출력하는 예 
+        for(int i=0; i < 10; i++) {
+            if(i % 2 == 0) {
+=====================================================================
+Found a 11 line (36 tokens) duplication in the following files: 
+Starting at line 45 of D:\책\workspace\PMD\src\com\software\string\solution\DuplicatedLiteralsExample.java
+Starting at line 42 of D:\책\workspace\PMD\src\com\software\string\problem\DuplicatedLiteralsExample.java
+
+        if(ROLE_ADMIN.equals(role) && ROLE_USER.equals(role)) {
+            result = false;
+        } else {
+            this.userId = userId;
+            this.password = password;
+            this.role = role;
+            result = true;
+        }
+        return result;
+    }
+}
+=====================================================================
+Found a 7 line (36 tokens) duplication in the following files: 
+Starting at line 3 of D:\책\workspace\PMD\src\com\software\basic\solution\SimplifyBooleanReturnsExample.java
+Starting at line 3 of D:\책\workspace\PMD\src\com\software\basic\problem\SimplifyBooleanReturnsExample.java
+
+public class SimplifyBooleanReturnsExample {
+
+    public static void main(String[] args) {
+        System.out.println(isEvenNumber(2));
+    }
+    
+    public static boolean isEvenNumber(int value) {
+=====================================================================
+Found a 4 line (35 tokens) duplication in the following files: 
+Starting at line 10 of D:\책\workspace\PMD\src\com\software\design\solution\MissingBreakInSwitchExample1.java
+Starting at line 5 of D:\책\workspace\PMD\src\com\software\design\problem\MissingBreakInSwitchExample2.java
+Starting at line 10 of D:\책\workspace\PMD\src\com\software\design\problem\MissingBreakInSwitchExample1.java
+
+    public static void main(String[] args) {
+        int key = args != null ? Integer.parseInt( args[0] ) : 0;
+        switch (key) {
+        case LOGIN:
+=====================================================================
+Found a 12 line (34 tokens) duplication in the following files: 
+Starting at line 19 of D:\책\workspace\PMD\src\com\software\string\problem\StartWithExample2.java
+Starting at line 19 of D:\책\workspace\PMD\src\com\software\string\problem\StartWithExample.java
+
+               if(str.startsWith("U")) {
+                   //System.out.println("상품 정보를 수정합니다.");
+               }
+           }
+           // 종료 시간
+           long endTime = System.currentTimeMillis();
+           
+           // 시간 출력
+           System.out.println("##startWith  실행시간(초.0f) : " + ( endTime - startTime )/1000.0f +"초");
+    }
+    
+    public void doCharAt() {
+=====================================================================
+Found a 8 line (34 tokens) duplication in the following files: 
+Starting at line 12 of D:\책\workspace\PMD\src\com\software\optimize\solution\immutable\ImmutableObjectExample.java
+Starting at line 11 of D:\책\workspace\PMD\src\com\software\optimize\problem\immutable\ImmutableObjectExample.java
+
+        str = str.toUpperCase();
+        System.out.println("변경 후 문자열: " + str);
+        
+        BigDecimal big = new BigDecimal(10);
+        System.out.println("변경 전 BigDecimal 값: " + big);
+        //기존 BigDecimal에 20을 더하는 메소드를 수행하면
+        //기존 값인 10과 20을 더한 새로운 객체를 생성해서 반환한다.
+        big = big.add(new BigDecimal(20));
+=====================================================================
+Found a 5 line (34 tokens) duplication in the following files: 
+Starting at line 33 of D:\책\workspace\PMD\src\com\software\empty\problem\EmptyFinallyBlockExample.java
+Starting at line 38 of D:\책\workspace\PMD\src\com\software\design\problem\EmptyFinallyBlockExample.java
+
+            if (rs!=null)rs.close();
+            if(stmt!=null) stmt.close();
+            if(con!=null) con.close();
+            
+        } catch (SQLException e) {
+=====================================================================
+Found a 17 line (34 tokens) duplication in the following files: 
+Starting at line 8 of D:\책\workspace\PMD\src\com\software\debug\solution\equals\AssertEqualsExample.java
+Starting at line 8 of D:\책\workspace\PMD\src\com\software\debug\problem\equals\AssertEqualsExample.java
+
+public class AssertEqualsExample {
+    
+    private static CodeGenerator generator;
+    
+    @BeforeClass
+    public  static void setUpBeforeClass() {
+        generator = new CodeGenerator();
+    }
+    
+    /**
+     * 문자를 코드로 변환화는 기능이 정상적으로 작동하는지 테스트하는 메소드
+     */
+    @Test
+    public void test() {
+        
+        //정상적으로 예상한 값과 실제 값이 같다면 통과한다.
+        assertEquals("입금 요청 메시지의 코드 변환", "CODE001", generator.toCode("입금"));
+=====================================================================
+Found a 9 line (34 tokens) duplication in the following files: 
+Starting at line 24 of D:\책\workspace\PMD\src\com\software\braces\problem\OTBSExample.java
+Starting at line 30 of D:\책\workspace\PMD\src\com\software\braces\problem\KnRStyleExample.java
+
+    public OTBSExample(boolean status, int x, int y) {
+        // 메소드 내의 모든 괄호는 제어문과 같은 라인에 존재한다.
+        while (x == y) {
+            something();
+            somethingelse();
+
+            if (status) {
+                do_correct();
+            } else {
+=====================================================================
+Found a 5 line (33 tokens) duplication in the following files: 
+Starting at line 10 of D:\책\workspace\PMD\src\com\software\string\solution\IndexOfExample.java
+Starting at line 9 of D:\책\workspace\PMD\src\com\software\string\problem\IndexOfExample.java
+
+        System.out.println("문자 a는 " + str.indexOf('a') + "번째에 위치한다.");
+        System.out.println("문자열 abc는 " + str.indexOf("abc") + "번째에 위치한다.");
+        
+        //char형은 char형태의 작은 따옴표를 사용해야 한다.
+        System.out.println("15번째 문자 이후부터 찾은 문자 a는 " + str.indexOf('a', 15) + "번째에 위치한다.");
+=====================================================================
+Found a 4 line (33 tokens) duplication in the following files: 
+Starting at line 3 of D:\책\workspace\PMD\src\com\software\design\solution\MissingBreakInSwitchExample2.java
+Starting at line 3 of D:\책\workspace\PMD\src\com\software\design\problem\MissingBreakInSwitchExample2.java
+
+public class MissingBreakInSwitchExample2 {
+
+    public static void main(String[] args) {
+        int key = args != null ? Integer.parseInt( args[0] ) : 0;
+=====================================================================
+Found a 7 line (33 tokens) duplication in the following files: 
+Starting at line 3 of D:\책\workspace\PMD\src\com\software\basic\solution\LoopExample.java
+Starting at line 3 of D:\책\workspace\PMD\src\com\software\basic\problem\LoopExample.java
+
+public class LoopExample {
+
+    public static void main(String[] args) {
+            //예제의 문제의 현상만 해결한 방법
+            for (int i = 2; i < 10; i++) {
+                
+                for (int j = 1; j < 10; j++) {
+=====================================================================
+Found a 8 line (32 tokens) duplication in the following files: 
+Starting at line 12 of D:\책\workspace\PMD\src\com\software\string\problem\StartWithExample2.java
+Starting at line 30 of D:\책\workspace\PMD\src\com\software\string\problem\StartWithExample2.java
+
+    public void doStartsWith() {
+        String str = "U00001";
+        
+        // 시작 시간
+           long startTime = System.currentTimeMillis();
+           //startsWith로 접두사를 100만 회 비교  
+           for(int i=0; i < 1000000; i++) {
+               if(str.startsWith("U")) {
+=====================================================================
+Found a 8 line (32 tokens) duplication in the following files: 
+Starting at line 12 of D:\책\workspace\PMD\src\com\software\string\problem\StartWithExample.java
+Starting at line 30 of D:\책\workspace\PMD\src\com\software\string\problem\StartWithExample.java
+
+    public void doStartsWith() {
+        String str = "UPD00001";
+        
+        // 시작 시간
+           long startTime = System.currentTimeMillis();
+           //startsWith로 접두사를 100만 회 비교  
+           for(int i=0; i < 1000000; i++) {
+               if(str.startsWith("UPD")) {
+=====================================================================
+Found a 6 line (32 tokens) duplication in the following files: 
+Starting at line 7 of D:\책\workspace\PMD\src\com\software\design\solution\NestedIfExample.java
+Starting at line 7 of D:\책\workspace\PMD\src\com\software\design\problem\NestedIfExample.java
+
+public class NestedIfExample {
+
+    public static void main(String[] args) {
+        Calendar calendar = new GregorianCalendar(Locale.KOREA);
+        
+        for(int i=1900; i <=calendar.get(Calendar.YEAR); i++) {
+=====================================================================
+Found a 8 line (31 tokens) duplication in the following files: 
+Starting at line 3 of D:\책\workspace\PMD\src\com\software\string\solution\IndexOfExample.java
+Starting at line 3 of D:\책\workspace\PMD\src\com\software\string\problem\IndexOfExample.java
+
+public class IndexOfExample {
+
+    public static void main(String[] args) {
+        String str = "0123456789abcdef0123456789abcdef";
+
+        //다양한 indexOf 메소드 사용법의 예
+        //char형은 char형태의 작은 따옴표를 사용해야 한다.
+        System.out.println("문자 a는 " + str.indexOf('a') + "번째에 위치한다.");
+=====================================================================
+Found a 6 line (31 tokens) duplication in the following files: 
+Starting at line 22 of D:\책\workspace\PMD\src\com\software\string\solution\DuplicatedLiteralsExample.java
+Starting at line 43 of D:\책\workspace\PMD\src\com\software\string\solution\DuplicatedLiteralsExample.java
+
+    public boolean changeRole(String role) {
+        boolean result;
+        if(ROLE_ADMIN.equals(role) && ROLE_USER.equals(role)) {
+            result = false;
+        } else {
+            this.role = role;
+=====================================================================
+Found a 6 line (31 tokens) duplication in the following files: 
+Starting at line 19 of D:\책\workspace\PMD\src\com\software\string\problem\DuplicatedLiteralsExample.java
+Starting at line 40 of D:\책\workspace\PMD\src\com\software\string\problem\DuplicatedLiteralsExample.java
+
+    public boolean changeRole(String role) {
+        boolean result;
+        if("R01".equals(role) && "R02".equals(role)) {
+            result = false;
+        } else {
+            this.role = role;
+=====================================================================
+Found a 10 line (31 tokens) duplication in the following files: 
+Starting at line 11 of D:\책\workspace\PMD\src\com\software\optimize\solution\mutator\LottoController.java
+Starting at line 11 of D:\책\workspace\PMD\src\com\software\optimize\problem\mutator\LottoController.java
+
+public final class LottoController {
+
+    //직접 접근이 제한되고 상수로 등록된 로또 마감일
+    private final Date closingDate;
+    
+    //직접 접근이 제한되고 상수로 등록된 로또 번호 배열
+    private final int[] lotto;
+    
+    public LottoController(int[] lotto, Date closingDate) {
+        this.lotto = new int[lotto.length];
+=====================================================================
+Found a 6 line (31 tokens) duplication in the following files: 
+Starting at line 3 of D:\책\workspace\PMD\src\com\software\braces\solution\LoopExample.java
+Starting at line 3 of D:\책\workspace\PMD\src\com\software\braces\problem\LoopExample.java
+
+public class LoopExample {
+
+    public static void main(String[] args) {
+        int size =0;
+
+        for(int i = 0; i < 10; i++) { 
+=====================================================================
+Found a 7 line (31 tokens) duplication in the following files: 
+Starting at line 3 of D:\책\workspace\PMD\src\com\software\basic\solution\NullCheckExample.java
+Starting at line 3 of D:\책\workspace\PMD\src\com\software\basic\problem\NullCheckExample.java
+
+public class NullCheckExample {
+
+    public static void main(String[] args) {
+        String a = "abcde";
+        String b = null;
+        
+        System.out.println(isNull(a));
+=====================================================================
+Found a 6 line (31 tokens) duplication in the following files: 
+Starting at line 13 of D:\책\workspace\PMD\src\com\software\basic\solution\BranchingExample.java
+Starting at line 22 of D:\책\workspace\PMD\src\com\software\basic\solution\BranchingExample.java
+Starting at line 12 of D:\책\workspace\PMD\src\com\software\basic\problem\BranchingExample.java
+
+        }
+        
+        //제어문과 break문을 이용하여 반복문을 종료시키는 예 
+        for(int i=0; i < 10; i++) {
+            if(i % 2 == 0) {
+                System.out.println(i);
+=====================================================================
+Found a 4 line (31 tokens) duplication in the following files: 
+Starting at line 7 of D:\책\workspace\PMD\src\com\software\basic\problem\BranchingExample.java
+Starting at line 15 of D:\책\workspace\PMD\src\com\software\basic\problem\BranchingExample.java
+
+        for(int i=0; i < 10; i++) {
+            if(i % 2 == 0) {
+                System.out.println(i);
+            }
+=====================================================================
+Found a 8 line (30 tokens) duplication in the following files: 
+Starting at line 38 of D:\책\workspace\PMD\src\com\software\string\solution\DuplicatedLiteralsExample.java
+Starting at line 35 of D:\책\workspace\PMD\src\com\software\string\problem\DuplicatedLiteralsExample.java
+
+        }
+        this.userId = userId;
+        this.password = password;
+    }
+    
+    public boolean updateUser(String userId, String password, String role) {
+        boolean result;
+        if(ROLE_ADMIN.equals(role) && ROLE_USER.equals(role)) {
+=====================================================================
+Found a 8 line (30 tokens) duplication in the following files: 
+Starting at line 5 of D:\책\workspace\PMD\src\com\software\optimize\solution\immutable\ImmutableObjectExample.java
+Starting at line 5 of D:\책\workspace\PMD\src\com\software\optimize\problem\immutable\ImmutableObjectExample.java
+
+public class ImmutableObjectExample {
+
+    public static void main(String[] args) {
+        String str = "test";
+        System.out.println("변경 전 문자열: " + str);
+        //문자열을 대문자로 변경하는 메소드를 수행하면
+        //대문자로 변경된 새로운 문자열을 생성해서 반환한다.
+        str = str.toUpperCase();
+=====================================================================
+Found a 3 line (30 tokens) duplication in the following files: 
+Starting at line 16 of D:\책\workspace\PMD\src\com\software\basic\solution\BranchingExample.java
+Starting at line 25 of D:\책\workspace\PMD\src\com\software\basic\solution\BranchingExample.java
+Starting at line 7 of D:\책\workspace\PMD\src\com\software\basic\problem\BranchingExample.java
+
+        for(int i=0; i < 10; i++) {
+            if(i % 2 == 0) {
+                System.out.println(i);
+=====================================================================
+Found a 8 line (29 tokens) duplication in the following files: 
+Starting at line 3 of D:\책\workspace\PMD\src\com\software\design\solution\inner\IMonster.java
+Starting at line 25 of D:\책\workspace\PMD\src\com\software\design\problem\inner\MonsterFactory.java
+
+public interface IMonster {
+    void forward();
+    void backward();
+    void turnLeft();
+    void turnRight();
+    void attact();
+    void defence();
+}
+=====================================================================
+Found a 2 line (29 tokens) duplication in the following files: 
+Starting at line 5 of D:\책\workspace\PMD\src\com\software\design\solution\MissingBreakInSwitchExample2.java
+Starting at line 10 of D:\책\workspace\PMD\src\com\software\design\solution\MissingBreakInSwitchExample1.java
+Starting at line 10 of D:\책\workspace\PMD\src\com\software\design\problem\MissingBreakInSwitchExample1.java
+
+    public static void main(String[] args) {
+        int key = args != null ? Integer.parseInt( args[0] ) : 0;
+=====================================================================
+Found a 5 line (29 tokens) duplication in the following files: 
+Starting at line 25 of D:\책\workspace\PMD\src\com\software\design\problem\StaticClassExample.java
+Starting at line 29 of D:\책\workspace\PMD\src\com\software\design\problem\SingletonClassExample2.java
+Starting at line 41 of D:\책\workspace\PMD\src\com\software\design\problem\SingletonClassExample1.java
+Starting at line 18 of D:\책\workspace\PMD\src\com\software\design\problem\PojoClassExample.java
+
+    public static String changeMoney(String str) {
+        DecimalFormat df = new DecimalFormat("###,###");
+        return df.format(Integer.valueOf(str));
+    }
+}
+=====================================================================
+Found a 9 line (29 tokens) duplication in the following files: 
+Starting at line 11 of D:\책\workspace\PMD\src\com\software\braces\problem\StringExample.java
+Starting at line 12 of D:\책\workspace\PMD\src\com\software\braces\problem\StringBuilderExample.java
+Starting at line 12 of D:\책\workspace\PMD\src\com\software\braces\problem\StringBufferExample.java
+
+		}
+		// 종료 시간
+        long endTime = System.currentTimeMillis();
+		
+        // 시간 출력
+        System.out.println("##  실행시간(초.0f) : " + ( endTime - startTime )/1000.0f +"초"); 
+	}
+	
+}
+=====================================================================
+Found a 10 line (28 tokens) duplication in the following files: 
+Starting at line 15 of D:\책\workspace\PMD\src\com\software\string\solution\DuplicatedLiteralsExample.java
+Starting at line 12 of D:\책\workspace\PMD\src\com\software\string\problem\DuplicatedLiteralsExample.java
+
+        } else if(ROLE_USER.equals(role)) {
+            return "사용자";
+        } else {
+            return "미등록";
+        }
+    }
+    
+    public boolean changeRole(String role) {
+        boolean result;
+        if(ROLE_ADMIN.equals(role) && ROLE_USER.equals(role)) {
+=====================================================================
+Found a 7 line (28 tokens) duplication in the following files: 
+Starting at line 20 of D:\책\workspace\PMD\src\com\software\optimize\solution\UseArraysAsListExample.java
+Starting at line 25 of D:\책\workspace\PMD\src\com\software\optimize\problem\UseArraysAsListExample.java
+
+        long endTime = System.currentTimeMillis();
+        
+        // 시간 출력
+        System.out.println("##실행시간(초.0f) : " + ( endTime - startTime )/1000.0f +"초");
+        
+    }
+}
+=====================================================================
+Found a 5 line (28 tokens) duplication in the following files: 
+Starting at line 14 of D:\책\workspace\PMD\src\com\software\code\solution\CyclomaticComplexityExample.java
+Starting at line 36 of D:\책\workspace\PMD\src\com\software\code\problem\CyclomaticComplexityExample.java
+
+        System.out.println("최종 결과"); 
+        for(int v : sortedArray) {
+            System.out.print(v + " "); 
+        }
+    }
+=====================================================================
+Found a 8 line (27 tokens) duplication in the following files: 
+Starting at line 3 of D:\책\workspace\PMD\src\com\software\string\solution\WrongCaseCompareExample.java
+Starting at line 3 of D:\책\workspace\PMD\src\com\software\string\problem\WrongCaseCompareExample.java
+
+public class WrongCaseCompareExample {
+
+    public static void main(String[] args) {
+        String value1 = "abcDEF";
+        
+        String value2 = "ABCdef";
+        
+        if(value1.equalsIgnoreCase(value2)) {
+=====================================================================
+Found a 4 line (27 tokens) duplication in the following files: 
+Starting at line 14 of D:\책\workspace\PMD\src\com\software\string\solution\IndexOfExample.java
+Starting at line 11 of D:\책\workspace\PMD\src\com\software\string\problem\IndexOfExample.java
+
+        System.out.println("15번째 문자 이후부터 찾은 문자 a는 " + str.indexOf('a', 15) + "번째에 위치한다.");
+        System.out.println("15번째 문자 이후부터 찾은 문자열 abc는 " + str.indexOf("abc", 15) + "번째에 위치한다.");
+    }
+}
+=====================================================================
+Found a 4 line (27 tokens) duplication in the following files: 
+Starting at line 16 of D:\책\workspace\PMD\src\com\software\string\problem\StartWithExample2.java
+Starting at line 16 of D:\책\workspace\PMD\src\com\software\string\problem\StartWithExample.java
+
+           long startTime = System.currentTimeMillis();
+           //startsWith로 접두사를 100만 회 비교  
+           for(int i=0; i < 1000000; i++) {
+               if(str.startsWith("U")) {
+=====================================================================
+Found a 3 line (27 tokens) duplication in the following files: 
+Starting at line 19 of D:\책\workspace\PMD\src\com\software\optimize\solution\AvoidArrayLoopsExample.java
+Starting at line 21 of D:\책\workspace\PMD\src\com\software\optimize\problem\AvoidArrayLoopsExample.java
+
+    public void copyByArrayCopy(int[] source) {
+        int[] target = new int[source.length]; 
+        long startTime = System.currentTimeMillis();
+=====================================================================
+Found a 8 line (27 tokens) duplication in the following files: 
+Starting at line 11 of D:\책\workspace\PMD\src\com\software\naming\solution\WrongVariableExample.java
+Starting at line 10 of D:\책\workspace\PMD\src\com\software\naming\problem\WrongVariableExample.java
+
+        System.out.println(name);
+    }
+    
+    public static void main(String[] args) {
+        WrongVariableExample wvExample = new WrongVariableExample();
+        wvExample.doWhatever();
+    }
+}
+=====================================================================
+Found a 5 line (27 tokens) duplication in the following files: 
+Starting at line 37 of D:\책\workspace\PMD\src\com\software\empty\problem\EmptyFinallyBlockExample.java
+Starting at line 32 of D:\책\workspace\PMD\src\com\software\design\problem\EmptyFinallyBlockExample.java
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+=====================================================================
+Found a 7 line (26 tokens) duplication in the following files: 
+Starting at line 32 of D:\책\workspace\PMD\src\com\software\design\problem\sde\SwitchDensityExample.java
+Starting at line 46 of D:\책\workspace\PMD\src\com\software\design\problem\sde\SwitchDensityExample.java
+
+        case ETNEWS :
+            if(!isEnable(path)) {
+                break;
+            }
+            news = getNews(path);
+            title = getEtNewsTitle(news);
+            body = getEtNewsBody(news);
+=====================================================================
+Found a 6 line (26 tokens) duplication in the following files: 
+Starting at line 7 of D:\책\workspace\PMD\src\com\software\basic\solution\FloatExample.java
+Starting at line 7 of D:\책\workspace\PMD\src\com\software\basic\problem\FloatExample.java
+
+public class FloatExample {
+    public static void main(String[] args) {
+        final int START = 2_000_000_000;
+        int count = 0;
+        //int 또는 long을 이용하자.
+        for (int f = START; f < START + 50; f++) {
+=====================================================================
+Found a 7 line (26 tokens) duplication in the following files: 
+Starting at line 14 of D:\책\workspace\PMD\src\com\software\basic\problem\IfExample.java
+Starting at line 21 of D:\책\workspace\PMD\src\com\software\basic\problem\IfExample.java
+
+        }
+        
+        //1차 요구사항 변경
+        if( num > 4 ) {
+            if( num < 10) {
+                System.out.println(num +"은 4보다 크고 10보다 작다");
+            }
+=====================================================================
+Found a 8 line (25 tokens) duplication in the following files: 
+Starting at line 10 of D:\책\workspace\PMD\src\com\software\string\solution\WrongCaseCompareExample.java
+Starting at line 18 of D:\책\workspace\PMD\src\com\software\string\problem\WrongCaseCompareExample.java
+
+        if(value1.equalsIgnoreCase(value2)) {
+            System.out.println("value1 & value2는 같다");
+        } else {
+            System.out.println("value1 & value2는 다르다");
+        }
+        
+    }
+}
+=====================================================================
+Found a 5 line (25 tokens) duplication in the following files: 
+Starting at line 11 of D:\책\workspace\PMD\src\com\software\string\problem\WrongCaseCompareExample.java
+Starting at line 18 of D:\책\workspace\PMD\src\com\software\string\problem\WrongCaseCompareExample.java
+
+        if(value1.toUpperCase().equals(value2.toUpperCase())) {
+            System.out.println("value1 & value2는 같다");
+        } else {
+            System.out.println("value1 & value2는 다르다");
+        }
+=====================================================================
+Found a 4 line (25 tokens) duplication in the following files: 
+Starting at line 16 of D:\책\workspace\PMD\src\com\software\string\problem\StartWithExample2.java
+Starting at line 34 of D:\책\workspace\PMD\src\com\software\string\problem\StartWithExample.java
+
+           long startTime = System.currentTimeMillis();
+           //startsWith로 접두사를 100만 회 비교  
+           for(int i=0; i < 1000000; i++) {
+               if(str.startsWith("U")) {
+=====================================================================
+Found a 4 line (25 tokens) duplication in the following files: 
+Starting at line 34 of D:\책\workspace\PMD\src\com\software\string\problem\StartWithExample2.java
+Starting at line 16 of D:\책\workspace\PMD\src\com\software\string\problem\StartWithExample.java
+
+           long startTime = System.currentTimeMillis();
+           //charAt으로 접두사를 100만 회 비교  
+           for(int i=0; i < 1000000; i++) {
+               if(str.charAt(0) == 'U') {
+=====================================================================
+Found a 6 line (25 tokens) duplication in the following files: 
+Starting at line 6 of D:\책\workspace\PMD\src\com\software\optimize\solution\AvoidArrayLoopsExample.java
+Starting at line 9 of D:\책\workspace\PMD\src\com\software\optimize\solution\ArrayCopyExample.java
+Starting at line 6 of D:\책\workspace\PMD\src\com\software\optimize\problem\AvoidArrayLoopsExample.java
+
+        int[] source = new int[10000000];
+        
+        //원본 배열에 값 입력
+        for(int i=0; i < source.length; i++) {
+            source[i] = i;
+        }
+=====================================================================
+Found a 7 line (25 tokens) duplication in the following files: 
+Starting at line 68 of D:\책\workspace\PMD\src\com\software\design\solution\sde\SwitchDensityExample.java
+Starting at line 88 of D:\책\workspace\PMD\src\com\software\design\solution\sde\SwitchDensityExample.java
+
+            email = getEtEmail(news);
+            newsVO =  new NewsVO(title,body,author,date,email);
+            storeNews(newsVO);
+        }
+    }
+    
+    public void saveZdNews(String path){
+=====================================================================
+Found a 5 line (25 tokens) duplication in the following files: 
+Starting at line 3 of D:\책\workspace\PMD\src\com\software\design\solution\sde\NewsVO.java
+Starting at line 3 of D:\책\workspace\PMD\src\com\software\design\problem\sde\NewsVO.java
+
+public class NewsVO {
+	public NewsVO(String title, String body, String author, String date, String email) {
+		
+	}
+}
+=====================================================================
+Found a 7 line (25 tokens) duplication in the following files: 
+Starting at line 6 of D:\책\workspace\PMD\src\com\software\design\problem\dcl\DclTest.java
+Starting at line 14 of D:\책\workspace\PMD\src\com\software\design\problem\dcl\DclTest.java
+Starting at line 6 of D:\책\workspace\PMD\src\com\software\basic\problem\dcl\DclTest.java
+Starting at line 14 of D:\책\workspace\PMD\src\com\software\basic\problem\dcl\DclTest.java
+
+        Thread thread1 = new Thread() {
+            @Override
+            public void run() {
+                // 첫 번째 인스턴스 호출
+                DclSample.getInstance().printStatus();    //1
+            }
+        };
+=====================================================================
+Found a 6 line (25 tokens) duplication in the following files: 
+Starting at line 9 of D:\책\workspace\PMD\src\com\software\coupling\solution\demeter\Customer.java
+Starting at line 9 of D:\책\workspace\PMD\src\com\software\coupling\problem\demeter\Customer.java
+
+    private Teller teller;
+    
+    public Customer(String CustomerCode, int money) {
+        teller = new Teller();
+        this.money = money;
+        this.customerCode = CustomerCode;
+=====================================================================
+Found a 7 line (25 tokens) duplication in the following files: 
+Starting at line 3 of D:\책\workspace\PMD\src\com\software\braces\solution\IfExample.java
+Starting at line 3 of D:\책\workspace\PMD\src\com\software\braces\problem\IfExample.java
+
+public class IfExample {
+
+    public static void main(String[] args) {
+        
+        int size = 0;
+        //단 한 줄의 코드라도 괄호로 처리한다.
+        if(size != 0) { 
+=====================================================================
+Found a 8 line (25 tokens) duplication in the following files: 
+Starting at line 6 of D:\책\workspace\PMD\src\com\software\basic\solution\SkipExample.java
+Starting at line 5 of D:\책\workspace\PMD\src\com\software\basic\problem\SkipExample.java
+
+public class SkipExample {
+    /**
+     * 일반적인 skip 메소드 사용방법
+     * @param args
+     * @throws Exception
+     */
+    public static void main(String[] args) throws Exception{
+        FileInputStream is = new FileInputStream("d://text.txt");
+=====================================================================
+Found a 6 line (25 tokens) duplication in the following files: 
+Starting at line 12 of D:\책\workspace\PMD\src\com\software\basic\solution\FloatExample.java
+Starting at line 11 of D:\책\workspace\PMD\src\com\software\basic\problem\FloatExample.java
+
+        for (int f = START; f < START + 50; f++) {
+            count++;
+        }
+        System.out.println(count);
+    }
+}
